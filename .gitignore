@@ -1,0 +1,18 @@
+# Data & artifacts (regenerable, keep repo light)
+data/
+checkpoints/*.pt
+*.pth
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+*.egg-info/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# OS
+.DS_Store
+Thumbs.db
