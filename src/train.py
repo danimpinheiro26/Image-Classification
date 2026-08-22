@@ -17,11 +17,12 @@ from torchvision import datasets, transforms
 
 from model import SimpleCNN
 
-# ---- Hyperparameters: edit these between runs ----
-EPOCHS = 15
+# ---- Hyperparameters ----
+EPOCHS = 50
 BATCH_SIZE = 128
 LEARNING_RATE = 1e-3
-# ---------------------------------------------------
+SCHEDULER_PATIENCE = 10
+# -------------------------
 
 ROOT = Path(__file__).resolve().parent.parent
 DATA_DIR = ROOT / "data"
@@ -69,6 +70,11 @@ def main():
     model = SimpleCNN().to(device)
     criterion = nn.CrossEntropyLoss()
     optimizer = optim.Adam(model.parameters(), lr=LEARNING_RATE)
+    scheduler = optim.lr_scheduler.ReduceLROnPlateau(
+        optimizer=optimizer,
+        mode = 'max',
+        patience = SCHEDULER_PATIENCE,
+    )
 
     CKPT_DIR.mkdir(exist_ok=True)
     EXPERIMENTS_DIR.mkdir(exist_ok=True)
@@ -105,6 +111,7 @@ def main():
         if val_acc > best_acc:
             best_acc = val_acc
             torch.save(model.state_dict(), CKPT_DIR / "best_model.pt")
+        scheduler.step(val_acc)
 
     print(f"Done. Best val_acc={best_acc:.4f}")
 
