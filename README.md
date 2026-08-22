@@ -1,23 +1,26 @@
-# cnn-evolution
+# Image Classification
 
-This repo is my learning log for machine learning and PyTorch, built around
-one small, evolving project: a CNN trained on CIFAR-10.
+A hands-on learning project for tracking my progress in machine learning and PyTorch through image classification.
 
-I'm not trying to build a state-of-the-art model here. The point is to have
-a real, working piece of code that I keep coming back to and improving as I
-learn — so I (and anyone else) can see how my understanding of deep learning
-progressed over time, not just look at a finished result.
+My goal isn't to build the best possible model, but to track my progress and thinking process.
 
-## What's here
+The code, experiments, and git history are all part of the learning process.
 
-- `src/model.py` — the CNN architecture
-- `src/train.py` — training loop, checkpointing, per-run result logging
-- `src/plot_evolution.py` — plots accuracy across all past runs
-- `notebooks/` — messier exploration (trying ideas, visualizing things)
-- `experiments/` — a JSON summary of every training run, kept in git so the
-  history of results survives even as the code changes
+## What's Inside
 
-## Setup
+```text
+src/
+├── model.py          # Model architecture
+├── train.py          # Training loop, checkpointing, and result logging
+└── plot_evolution.py # Visualize progress across previous runs
+
+notebooks/            # Messy exploration
+experiments/          # JSON summaries of training runs
+```
+
+## Getting Started
+
+Create a virtual environment and install the dependencies:
 
 ```powershell
 python -m venv .venv
@@ -27,27 +30,24 @@ pip install -r requirements.txt
 
 ## Train
 
+Run the current model with:
+
 ```powershell
-python src\train.py --epochs 15 --batch-size 128 --lr 1e-3
+python src\train.py
 ```
 
-CIFAR-10 downloads automatically the first time. Each run saves a summary
-to `experiments/<timestamp>.json`.
+The dataset is downloaded automatically the first time it is needed.
 
-## How I'm tracking progress
+Each training run saves a summary to:
 
-Every change I make — a bug fix, a new layer, a different optimizer — is
-its own git commit with a message explaining what changed and why. That
-commit history *is* the point of this repo: it's a record of what I tried,
-what worked, and what I learned along the way.
+```text
+experiments/<timestamp>.json
+```
 
-## Current state
+This allows me to keep track of how different changes affect the results over time.
 
-A small CNN (3 conv blocks + 2 fully connected layers, ~1.2M params).
-Nothing fancy yet — this is the baseline I'm building on.
 
-## What I'm learning next
+## Current State
 
-- [ ] Understanding data augmentation better (comparing with/without)
-- [ ] Residual connections
-- [ ] Reading my own `experiments/*.json` results critically instead of just collecting them
+The project currently starts with a 3-layer CNN followed by a final fully connected layer.
+It got a 77% accuracy on tha validation set.
