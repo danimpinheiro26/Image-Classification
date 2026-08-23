@@ -19,7 +19,7 @@ from torchvision.transforms import v2
 from model import CNN
 
 # ---- Hyperparameters ----
-EPOCHS = 10
+EPOCHS = 30
 BATCH_SIZE = 200
 LEARNING_RATE = 1e-3
 SCHEDULER_PATIENCE = 3
