@@ -8,48 +8,60 @@ import torch
 import torch.nn as nn
 
 
-class SimpleCNN(nn.Module):
-
-    def __init__(self, num_classes: int = 10, dropout: float = 0.3):
+class ResidualLayers(nn.Module):
+    def __init__(self, n_inputs, n_outputs):
         super().__init__()
-
         self.features = nn.Sequential(
-            # Block 1: 32x32 -> 16x16
-            nn.Conv2d(3, 32, kernel_size=3, padding=1),
-            nn.BatchNorm2d(32),
-            nn.ReLU(inplace=True),
-            nn.MaxPool2d(2),
+            nn.Conv2d(n_inputs, n_outputs, 3, padding=1, bias=False),
+            nn.BatchNorm2d(n_outputs),
+            nn.ReLU(),
 
-            # Block 2: 16x16 -> 8x8
-            nn.Conv2d(32, 64, kernel_size=3, padding=1),
-            nn.BatchNorm2d(64),
-            nn.ReLU(inplace=True),
-            nn.MaxPool2d(2),
-
-            # Block 3: 8x8 -> 4x4
-            nn.Conv2d(64, 128, kernel_size=3, padding=1),
-            nn.BatchNorm2d(128),
-            nn.ReLU(inplace=True),
-            nn.MaxPool2d(2),
+            nn.Conv2d(n_outputs, n_outputs, 3, padding=1, bias=False),
+            nn.BatchNorm2d(n_outputs),
         )
+        self.relu = nn.ReLU()
 
-        self.classifier = nn.Sequential(
+        if n_inputs == n_outputs:
+            self.skip = nn.Identity()
+        else:
+            self.skip = nn.Conv2d(n_inputs, n_outputs, 1)
+
+    def forward(self, x):
+        gx = self.skip(x)
+        out = self.features(x) + gx
+
+        return self.relu(out)
+
+
+class CNN(nn.Module):
+    def __init__(self):
+        super().__init__()
+        self.features = nn.Sequential(
+            ResidualLayers(3, 64),
+
+            nn.MaxPool2d(2, 2),
+
+            ResidualLayers(64, 128),
+
+            nn.MaxPool2d(2, 2),
+
+            ResidualLayers(128, 256),
+            ResidualLayers(256, 512),
+
+            nn.AdaptiveAvgPool2d(1),
+
             nn.Flatten(),
-            nn.Linear(128 * 4 * 4, 256),
-            nn.ReLU(inplace=True),
-            nn.Dropout(dropout),
-            nn.Linear(256, num_classes),
-        )
 
-    def forward(self, x: torch.Tensor) -> torch.Tensor:
-        x = self.features(x)
-        x = self.classifier(x)
-        return x
+            nn.Linear(512, 10)
+        )
+    def forward(self, x):
+        logits = self.features(x)
+        return logits
 
 
 if __name__ == "__main__":
     # Quick sanity check: run `python src/model.py`
-    model = SimpleCNN()
+    model = CNN()
     dummy = torch.randn(4, 3, 32, 32)
     out = model(dummy)
     print(f"Output shape: {out.shape}")  # expected: torch.Size([4, 10])

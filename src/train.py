@@ -15,10 +15,10 @@ import torch.optim as optim
 from torch.utils.data import DataLoader
 from torchvision import datasets, transforms
 
-from model import SimpleCNN
+from model import CNN
 
 # ---- Hyperparameters ----
-EPOCHS = 50
+EPOCHS = 30
 BATCH_SIZE = 128
 LEARNING_RATE = 1e-3
 SCHEDULER_PATIENCE = 10
@@ -67,7 +67,7 @@ def main():
 
     train_loader, test_loader = get_dataloaders()
 
-    model = SimpleCNN().to(device)
+    model = CNN().to(device)
     criterion = nn.CrossEntropyLoss()
     optimizer = optim.Adam(model.parameters(), lr=LEARNING_RATE)
     scheduler = optim.lr_scheduler.ReduceLROnPlateau(
