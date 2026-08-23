@@ -49,5 +49,5 @@ This allows me to keep track of how different changes affect the results over ti
 
 ## Current State
 
-The project currently starts with a 3-layer CNN followed by a final fully connected layer.
-It got a 77% accuracy on tha validation set.
+The project currently features 8 convolutional layers, with residual connections at every 2 layers, followed by a final fully connected layer.
+It got a 88% accuracy on the validation set.
