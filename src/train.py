@@ -13,7 +13,8 @@ import torch
 import torch.nn as nn
 import torch.optim as optim
 from torch.utils.data import DataLoader
-from torchvision import datasets, transforms
+from torchvision import datasets
+from torchvision.transforms import v2
 
 from model import CNN
 
@@ -34,11 +35,11 @@ def get_dataloaders():
     mean = (0.4914, 0.4822, 0.4465)
     std = (0.2470, 0.2435, 0.2616)
 
-    transform = transforms.Compose([
-        transforms.ToTensor(),
-        transforms.Normalize(mean, std),
-    ])
-
+    transform = v2.Compose(
+        [v2.ToImage(), v2.RandomHorizontalFlip(), v2.RandomRotation(15),
+            v2.ColorJitter(0.1, 0.1, 0.1, 0.05), v2.RandomCrop(32, padding=4), 
+            v2.ToDtype(torch.float32, scale=True), v2.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))]
+    )
     train_set = datasets.CIFAR10(root=DATA_DIR, train=True, download=True, transform=transform)
     test_set = datasets.CIFAR10(root=DATA_DIR, train=False, download=True, transform=transform)
 
