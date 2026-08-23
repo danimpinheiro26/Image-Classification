@@ -18,10 +18,10 @@ from torchvision import datasets, transforms
 from model import CNN
 
 # ---- Hyperparameters ----
-EPOCHS = 30
-BATCH_SIZE = 128
+EPOCHS = 10
+BATCH_SIZE = 200
 LEARNING_RATE = 1e-3
-SCHEDULER_PATIENCE = 10
+SCHEDULER_PATIENCE = 3
 # -------------------------
 
 ROOT = Path(__file__).resolve().parent.parent
